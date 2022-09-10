@@ -1,42 +1,24 @@
 package com.myorg;
 
 import software.amazon.awscdk.App;
-import software.amazon.awscdk.Environment;
-import software.amazon.awscdk.StackProps;
-
-import java.util.Arrays;
 
 public class ProjectInfraApp {
     public static void main(final String[] args) {
         App app = new App();
 
-        new ProjectInfraStack(app, "ProjectInfraStack", StackProps.builder()
-                // If you don't specify 'env', this stack will be environment-agnostic.
-                // Account/Region-dependent features and context lookups will not work,
-                // but a single synthesized template can be deployed anywhere.
+        ProjectVpcStack vpc = new ProjectVpcStack(app, "vpc");
 
-                // Uncomment the next block to specialize this stack for the AWS Account
-                // and Region that are implied by the current CLI configuration.
-                /*
-                .env(Environment.builder()
-                        .account(System.getenv("CDK_DEFAULT_ACCOUNT"))
-                        .region(System.getenv("CDK_DEFAULT_REGION"))
-                        .build())
-                */
+        ProjectClusterStack cLuster = new ProjectClusterStack(app, "CLuster", vpc.getVpc());
+        cLuster.addDependency(vpc);
 
-                // Uncomment the next block if you know exactly what Account and Region you
-                // want to deploy the stack to.
-                /*
-                .env(Environment.builder()
-                        .account("123456789012")
-                        .region("us-east-1")
-                        .build())
-                */
+        ProjectRdsStack rds = new ProjectRdsStack(app, "Rds", vpc.getVpc());
+        rds.addDependency(vpc);
 
-                // For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-                .build());
+        ProjectServiceStack service = new ProjectServiceStack(app, "Service", cLuster.getCluster());
+        service.addDependency(cLuster);
 
         app.synth();
     }
 }
+
 

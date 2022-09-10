@@ -14,11 +14,5 @@ public class ProjectInfraStack extends Stack {
     public ProjectInfraStack(final Construct scope, final String id, final StackProps props) {
         super(scope, id, props);
 
-        // The code that defines your stack goes here
-
-        // example resource
-        // final Queue queue = Queue.Builder.create(this, "ProjectInfraQueue")
-        //         .visibilityTimeout(Duration.seconds(300))
-        //         .build();
     }
 }
